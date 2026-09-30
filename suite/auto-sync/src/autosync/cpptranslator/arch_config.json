@@ -343,5 +343,27 @@
     ],
     "templates_with_arg_deduction": [],
     "manually_edited_files": []
+  },
+  "CSKY": {
+    "files_to_translate": [
+      {
+        "in": "{LLVM_ROOT}/llvm/lib/Target/CSKY/Disassembler/CSKYDisassembler.cpp",
+        "out": "CSKYDisassembler.c"
+      },{
+        "in": "{LLVM_ROOT}/llvm/lib/Target/CSKY/MCTargetDesc/CSKYInstPrinter.cpp",
+        "out": "CSKYInstPrinter.c"
+      },{
+        "in": "{LLVM_ROOT}/llvm/lib/Target/CSKY/MCTargetDesc/CSKYInstPrinter.h",
+        "out": "CSKYInstPrinter.h"
+      }
+    ],
+    "files_for_template_search": [
+      "{CPP_INC_OUT_DIR}/CSKYGenDisassemblerTables.inc",
+      "{CPP_INC_OUT_DIR}/CSKYGenAsmWriter.inc",
+      "{LLVM_ROOT}/llvm/lib/Target/CSKY/Disassembler/CSKYDisassembler.cpp",
+      "{LLVM_ROOT}/llvm/lib/Target/CSKY/MCTargetDesc/CSKYInstPrinter.cpp"
+    ],
+    "templates_with_arg_deduction": [],
+    "manually_edited_files": []
   }
 }
