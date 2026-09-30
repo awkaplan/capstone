@@ -76,6 +76,8 @@ class Includes(Patch):
                 return res + get_sparc_includes(filename) + get_general_macros()
             case "RISCV":
                 return res + get_RISCV_includes(filename) + get_general_macros()
+            case "CSKY":
+                return res + get_CSKY_includes(filename) + get_general_macros()
             case "TEST_ARCH":
                 return res + b"test_output"
             case _:
@@ -303,6 +305,44 @@ def get_LoongArch_includes(filename: str) -> bytes:
                 b'#include "../../MCInstPrinter.h"\n' + b'#include "../../cs_priv.h"\n'
             )
     log.fatal(f"No includes given for LoongArch source file: {filename}")
+    exit(1)
+
+
+def get_CSKY_includes(filename: str) -> bytes:
+    match filename:
+        case "CSKYDisassembler.cpp":
+            return (
+                b'#include "../../MCInst.h"\n'
+                + b'#include "../../MathExtras.h"\n'
+                + b'#include "../../MCInstPrinter.h"\n'
+                + b'#include "../../MCDisassembler.h"\n'
+                + b'#include "../../MCFixedLenDisassembler.h"\n'
+                + b'#include "../../cs_priv.h"\n'
+                + b'#include "../../utils.h"\n'
+                + b'#include "CSKYDisassemblerExtension.h"\n'
+                + b"#define GET_SUBTARGETINFO_ENUM\n"
+                + b'#include "CSKYGenSubtargetInfo.inc"\n\n'
+                + b"#define GET_INSTRINFO_ENUM\n"
+                + b'#include "CSKYGenInstrInfo.inc"\n\n'
+                + b"#define GET_REGINFO_ENUM\n"
+                + b'#include "CSKYGenRegisterInfo.inc"\n\n'
+            )
+        case "CSKYInstPrinter.cpp":
+            return (
+                b'#include "CSKYMapping.h"\n'
+                + b'#include "CSKYInstPrinter.h"\n\n'
+                + b"#define GET_SUBTARGETINFO_ENUM\n"
+                + b'#include "CSKYGenSubtargetInfo.inc"\n\n'
+                + b"#define GET_INSTRINFO_ENUM\n"
+                + b'#include "CSKYGenInstrInfo.inc"\n\n'
+                + b"#define GET_REGINFO_ENUM\n"
+                + b'#include "CSKYGenRegisterInfo.inc"\n\n'
+            )
+        case "CSKYInstPrinter.h":
+            return (
+                b'#include "../../MCInstPrinter.h"\n' + b'#include "../../cs_priv.h"\n'
+            )
+    log.fatal(f"No includes given for CSKY source file: {filename}")
     exit(1)
 
 
