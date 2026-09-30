@@ -1,0 +1,23 @@
+Capstone's TableGen backend emits the DecodeInstruction/DecodeToMCInst/
+FieldFromInstruction macros for CSKY but never instantiates them, so
+decodeInstruction_2 and decodeInstruction_4 are left undefined and the
+module fails to link.
+
+RISCV is the other 16/32-bit target and carries exactly these two
+instantiations at the end of its tables; do the same for CSKY.
+
+diff --git a/arch/CSKY/CSKYGenDisassemblerTables.inc b/arch/CSKY/CSKYGenDisassemblerTables.inc
+--- a/arch/CSKY/CSKYGenDisassemblerTables.inc
++++ b/arch/CSKY/CSKYGenDisassemblerTables.inc
+@@ -6134,3 +6134,11 @@
+   /* Bogisity detected in disassembler state machine! */ \
+ }
+ 
++
++FieldFromInstruction(fieldFromInstruction_2, uint16_t)
++DecodeToMCInst(decodeToMCInst_2, fieldFromInstruction_2, uint16_t)
++DecodeInstruction(decodeInstruction_2, fieldFromInstruction_2, decodeToMCInst_2, uint16_t)
++
++FieldFromInstruction(fieldFromInstruction_4, uint32_t)
++DecodeToMCInst(decodeToMCInst_4, fieldFromInstruction_4, uint32_t)
++DecodeInstruction(decodeInstruction_4, fieldFromInstruction_4, decodeToMCInst_4, uint32_t)

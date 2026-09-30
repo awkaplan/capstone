@@ -1,0 +1,36 @@
+diff --git a/arch/CSKY/CSKYGenAsmWriter.inc b/arch/CSKY/CSKYGenAsmWriter.inc
+index 832ab50b..92d9cd3a 100644
+--- a/arch/CSKY/CSKYGenAsmWriter.inc
++++ b/arch/CSKY/CSKYGenAsmWriter.inc
+@@ -2267,11 +2267,11 @@ static void printInstruction(MCInst *MI, uint64_t Address, SStream *O) {
+     break;
+   case 2:
+     // CPRCR32, CPRGR32, CPWCR32, CPWGR32
+-    SStream_concat0(O, ", _");
+-    printOperand(MI_1_O);
+-    SStream_concat0(O_"_");
+-    printOperand(MI_2_O);
+-    SStream_concat1(O_');
++    SStream_concat0(O, ", <");
++    printOperand(MI, 1, O);
++    SStream_concat0(O, ", ");
++    printOperand(MI, 2, O);
++    SStream_concat1(O, '>');
+     return;
+     break;
+   case 3:
+@@ -2799,9 +2799,11 @@ static bool CSKYInstPrinterValidateMCOperand(const MCOperand *MCOp,
+   case 1: {
+ 
+     int64_t Imm;
+-    if (MCOp.evaluateAsConstantImm(Imm))
+-      return isShiftedUInt_5_0(Imm);
+-    return MCOp.isBareSymbolRef();
++    if (MCOperand_isImm(MCOp)) {
++      Imm = MCOperand_getImm(MCOp);
++      return isShiftedUIntN(5, 0, Imm);
++    }
++    return MCOperand_isExpr(MCOp);
+   
+     }
+   }
