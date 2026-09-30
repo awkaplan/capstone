@@ -124,6 +124,7 @@ typedef enum cs_arch {
 	CS_ARCH_LOONGARCH, ///< LoongArch architecture
 	CS_ARCH_XTENSA, ///< Xtensa architecture
 	CS_ARCH_ARC, ///< ARC architecture
+	CS_ARCH_CSKY, ///< CSKY architecture
 	CS_ARCH_MAX,
 	CS_ARCH_ALL = 0xFFFF, // All architectures - for cs_support()
 } cs_arch;
@@ -350,6 +351,12 @@ typedef enum cs_mode {
 	CS_MODE_XTENSA_ESP32S2 = 1 << 2, ///< Xtensa ESP32S2
 	CS_MODE_XTENSA_ESP8266 = 1 << 3, ///< Xtensa ESP328266
 	CS_MODE_XTENSA_ESP32S3 = 1 << 4, ///< Xtensa ESP32S3
+	CS_MODE_CSKY_801 = 1 << 1, ///< CSKY CK801 (base ISA CK801)
+	CS_MODE_CSKY_802 = 1 << 2, ///< CSKY CK802
+	CS_MODE_CSKY_803 = 1 << 3, ///< CSKY CK803/CK803S
+	CS_MODE_CSKY_807 = 1 << 4, ///< CSKY CK807
+	CS_MODE_CSKY_810 = 1 << 5, ///< CSKY CK810
+	CS_MODE_CSKY_860 = 1 << 6, ///< CSKY CK860
 } cs_mode;
 
 typedef void *(CAPSTONE_API *cs_malloc_t)(size_t size);
@@ -527,6 +534,7 @@ typedef struct cs_opt_skipdata {
 #include "evm.h"
 #include "hppa.h"
 #include "loongarch.h"
+#include "csky.h"
 #include "m680x.h"
 #include "m68k.h"
 #include "mips.h"
@@ -600,6 +608,7 @@ typedef struct cs_detail {
 		cs_loongarch loongarch; ///< LoongArch architecture
 		cs_xtensa xtensa; ///< Xtensa architecture
 		cs_arc arc; ///< ARC architecture
+		cs_csky csky; ///< CSKY architecture
 	};
 } cs_detail;
 
@@ -756,6 +765,7 @@ CAPSTONE_EXPORT
 void CAPSTONE_API cs_arch_register_alpha(void);
 CAPSTONE_EXPORT
 void CAPSTONE_API cs_arch_register_loongarch(void);
+void CAPSTONE_API cs_arch_register_csky(void);
 CAPSTONE_EXPORT
 void CAPSTONE_API cs_arch_register_arc(void);
 

@@ -121,8 +121,8 @@ if(APPLE AND NOT CAPSTONE_BUILD_MACOS_THIN)
     set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 endif()
 
-set(SUPPORTED_ARCHITECTURES ARM AARCH64 M68K MIPS PPC SPARC SYSTEMZ XCORE X86 TMS320C64X M680X EVM MOS65XX WASM BPF RISCV SH TRICORE ALPHA HPPA LOONGARCH XTENSA ARC)
-set(SUPPORTED_ARCHITECTURE_LABELS ARM AARCH64 M68K MIPS PowerPC Sparc SystemZ XCore x86 TMS320C64x M680x EVM MOS65XX WASM BPF RISCV SH TriCore Alpha HPPA LoongArch Xtensa ARC)
+set(SUPPORTED_ARCHITECTURES ARM AARCH64 M68K MIPS PPC SPARC SYSTEMZ XCORE X86 TMS320C64X M680X EVM MOS65XX WASM BPF RISCV SH TRICORE ALPHA HPPA LOONGARCH XTENSA ARC CSKY)
+set(SUPPORTED_ARCHITECTURE_LABELS ARM AARCH64 M68K MIPS PowerPC Sparc SystemZ XCore x86 TMS320C64x M680x EVM MOS65XX WASM BPF RISCV SH TriCore Alpha HPPA LoongArch Xtensa ARC CSKY)
 
 # If building for OSX it's best to allow CMake to handle building both architectures
 if(APPLE AND NOT CAPSTONE_BUILD_MACOS_THIN)
@@ -250,6 +250,7 @@ set(HEADERS_COMMON
     include/capstone/alpha.h
     include/capstone/hppa.h
     include/capstone/loongarch.h
+    include/capstone/csky.h
     include/capstone/xtensa.h
     include/capstone/arc.h
 )
@@ -804,6 +805,27 @@ if (CAPSTONE_LOONGARCH_SUPPORT)
             )
 endif ()
 
+if (CAPSTONE_CSKY_SUPPORT)
+    add_definitions(-DCAPSTONE_HAS_CSKY)
+    set(CSTOOL_SRC
+        ${CSTOOL_SRC}
+        cstool/cstool_csky.c)
+    set(SOURCES_CSKY
+            arch/CSKY/CSKYDisassembler.c
+            arch/CSKY/CSKYDisassemblerExtension.c
+            arch/CSKY/CSKYInstPrinter.c
+            arch/CSKY/CSKYMapping.c
+            arch/CSKY/CSKYModule.c
+            )
+    set(HEADERS_CSKY
+            arch/CSKY/CSKYInstPrinter.h
+            arch/CSKY/CSKYMapping.h
+            arch/CSKY/CSKYModule.h
+            arch/CSKY/CSKYLinkage.h
+            arch/CSKY/CSKYDisassemblerExtension.h
+            )
+endif ()
+
 if(CAPSTONE_XTENSA_SUPPORT)
     add_definitions(-DCAPSTONE_HAS_XTENSA)
     set(CSTOOL_SRC
@@ -869,6 +891,7 @@ set(ALL_SOURCES
     ${SOURCES_ALPHA}
     ${SOURCES_HPPA}
     ${SOURCES_LOONGARCH}
+    ${SOURCES_CSKY}
     ${SOURCES_XTENSA}
     ${SOURCES_ARC}
 )
@@ -897,6 +920,7 @@ set(ALL_HEADERS
     ${HEADERS_ALPHA}
     ${HEADERS_HPPA}
     ${HEADERS_LOONGARCH}
+    ${HEADERS_CSKY}
     ${HEADERS_XTENSA}
     ${HEADERS_ARC}
 )
@@ -972,6 +996,7 @@ source_group("Source\\TriCore" FILES ${SOURCES_TRICORE})
 source_group("Source\\Alpha" FILES ${SOURCES_ALPHA})
 source_group("Source\\HPPA" FILES ${SOURCES_HPPA})
 source_group("Source\\LoongArch" FILES ${SOURCES_LOONGARCH})
+source_group("Source\\CSKY" FILES ${SOURCES_CSKY})
 source_group("Source\\Xtensa" FILES ${SOURCES_XTENSA})
 source_group("Source\\ARC" FILES ${SOURCES_ARC})
 
@@ -998,6 +1023,7 @@ source_group("Include\\TriCore" FILES ${HEADERS_TRICORE})
 source_group("Include\\Alpha" FILES ${HEADERS_ALPHA})
 source_group("Include\\HPPA" FILES ${HEADERS_HPPA})
 source_group("Include\\LoongArch" FILES ${HEADERS_LOONGARCH})
+source_group("Include\\CSKY" FILES ${HEADERS_CSKY})
 source_group("Include\\Xtensa" FILES ${HEADERS_XTENSA})
 source_group("Include\\ARC" FILES ${HEADERS_ARC})
 

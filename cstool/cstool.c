@@ -557,6 +557,13 @@ static struct {
 	{ "tc162", "Tricore V1.6.2", CS_ARCH_TRICORE, CS_MODE_TRICORE_162 },
 	{ "tc180", "Tricore V1.8.0", CS_ARCH_TRICORE, CS_MODE_TRICORE_180 },
 
+	{ "csky", "CSKY (generic)", CS_ARCH_CSKY, CS_MODE_LITTLE_ENDIAN },
+	{ "ck801", "CSKY CK801", CS_ARCH_CSKY, CS_MODE_CSKY_801 },
+	{ "ck802", "CSKY CK802", CS_ARCH_CSKY, CS_MODE_CSKY_802 },
+	{ "ck803", "CSKY CK803/CK803S", CS_ARCH_CSKY, CS_MODE_CSKY_803 },
+	{ "ck807", "CSKY CK807", CS_ARCH_CSKY, CS_MODE_CSKY_807 },
+	{ "ck810", "CSKY CK810", CS_ARCH_CSKY, CS_MODE_CSKY_810 },
+	{ "ck860", "CSKY CK860", CS_ARCH_CSKY, CS_MODE_CSKY_860 },
 	{ "loongarch32", "LoongArch 32-bit", CS_ARCH_LOONGARCH,
 	  CS_MODE_LOONGARCH32 },
 	{ "loongarch64", "LoongArch 64-bit", CS_ARCH_LOONGARCH,
@@ -676,6 +683,8 @@ static const char *get_arch_name(cs_arch arch)
 		return "LoongArch";
 	case CS_ARCH_ARC:
 		return "ARC";
+	case CS_ARCH_CSKY:
+		return "CSKY";
 	default:
 		return NULL;
 	}
@@ -852,6 +861,11 @@ static void print_details(csh handle, cs_arch arch, cs_mode md, cs_insn *ins)
 	case CS_ARCH_LOONGARCH:
 #ifdef CAPSTONE_HAS_LOONGARCH
 		print_insn_detail_loongarch(handle, ins);
+#endif
+		break;
+	case CS_ARCH_CSKY:
+#ifdef CAPSTONE_HAS_CSKY
+		print_insn_detail_csky(handle, ins);
 #endif
 		break;
 	case CS_ARCH_XTENSA:
@@ -1059,6 +1073,10 @@ int main(int argc, char **argv)
 
 			if (cs_support(CS_ARCH_LOONGARCH)) {
 				printf("loongarch=1 ");
+			}
+
+			if (cs_support(CS_ARCH_CSKY)) {
+				printf("csky=1 ");
 			}
 
 			if (cs_support(CS_ARCH_XTENSA)) {

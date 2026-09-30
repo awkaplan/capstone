@@ -22,6 +22,7 @@ void print_insn_detail_tricore(csh handle, cs_insn *ins);
 void print_insn_detail_alpha(csh handle, cs_insn *ins);
 void print_insn_detail_hppa(csh handle, cs_insn *ins);
 void print_insn_detail_loongarch(csh handle, cs_insn *ins);
+void print_insn_detail_csky(csh handle, cs_insn *ins);
 void print_insn_detail_xtensa(csh handle, cs_insn *ins);
 void print_insn_detail_arc(csh handle, cs_insn *ins);
 

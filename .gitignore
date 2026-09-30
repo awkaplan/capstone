@@ -152,3 +152,6 @@ suite/auto-sync/src/autosync.egg-info
 
 # clangd cache
 /.cache
+
+# local build dir for CSKY bring-up
+/build/

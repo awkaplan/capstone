@@ -64,6 +64,7 @@
 #include "arch/EVM/EVMModule.h"
 #include "arch/HPPA/HPPAModule.h"
 #include "arch/LoongArch/LoongArchModule.h"
+#include "arch/CSKY/CSKYModule.h"
 #include "arch/M680X/M680XModule.h"
 #include "arch/M68K/M68KModule.h"
 #include "arch/MOS65XX/MOS65XXModule.h"
@@ -257,6 +258,14 @@ typedef struct cs_arch_config {
 		~(CS_MODE_LITTLE_ENDIAN | CS_MODE_LOONGARCH32 | \
 		  CS_MODE_LOONGARCH64), \
 	}
+#define CS_ARCH_CONFIG_CSKY \
+	{ \
+		CSKY_global_init, \
+		CSKY_option, \
+		~(CS_MODE_LITTLE_ENDIAN | CS_MODE_BIG_ENDIAN | \
+		  CS_MODE_CSKY_801 | CS_MODE_CSKY_802 | CS_MODE_CSKY_803 | \
+		  CS_MODE_CSKY_807 | CS_MODE_CSKY_810 | CS_MODE_CSKY_860), \
+	}
 #define CS_ARCH_CONFIG_XTENSA \
 	{ \
 		Xtensa_global_init, \
@@ -397,6 +406,11 @@ static const cs_arch_config arch_configs[MAX_ARCH] = {
 #else
 	{ NULL, NULL, 0 },
 #endif
+#ifdef CAPSTONE_HAS_CSKY
+	CS_ARCH_CONFIG_CSKY,
+#else
+	{ NULL, NULL, 0 },
+#endif
 };
 
 // bitmask of enabled architectures
@@ -469,6 +483,9 @@ static const uint32_t all_arch = 0
 #endif
 #ifdef CAPSTONE_HAS_ARC
 				 | (1 << CS_ARCH_ARC)
+#endif
+#ifdef CAPSTONE_HAS_CSKY
+				 | (1 << CS_ARCH_CSKY)
 #endif
 	;
 #endif
@@ -705,6 +722,9 @@ void CAPSTONE_API cs_arch_register_arc(void)
 {
 #if defined(CAPSTONE_USE_ARCH_REGISTRATION) && defined(CAPSTONE_HAS_ARC)
 	CS_ARCH_REGISTER(ARC);
+#endif
+#if defined(CAPSTONE_USE_ARCH_REGISTRATION) && defined(CAPSTONE_HAS_CSKY)
+	CS_ARCH_REGISTER(CSKY);
 #endif
 }
 
@@ -1054,6 +1074,10 @@ static uint8_t skipdata_size(cs_struct *handle)
 	case CS_ARCH_LOONGARCH:
 		// LoongArch alignment is 4.
 		return 4;
+	case CS_ARCH_CSKY:
+		// CSKY instructions are 2 or 4 bytes long,
+		// therefore, skip 2 bytes.
+		return 2;
 	case CS_ARCH_ARC:
 		// ARC instruction's length can be 2, 4, 6 or 8 bytes,
 		// therefore, skip 2 bytes
@@ -1897,6 +1921,12 @@ int CAPSTONE_API cs_op_count(csh ud, const cs_insn *insn, unsigned int op_type)
 			    (loongarch_op_type)op_type)
 				count++;
 		break;
+	case CS_ARCH_CSKY:
+		for (i = 0; i < insn->detail->csky.op_count; i++)
+			if (insn->detail->csky.operands[i].type ==
+			    (csky_op_type)op_type)
+				count++;
+		break;
 	case CS_ARCH_ARC:
 		for (i = 0; i < insn->detail->arc.op_count; i++)
 			if (insn->detail->arc.operands[i].type ==
@@ -2125,6 +2155,15 @@ int CAPSTONE_API cs_op_index(csh ud, const cs_insn *insn, unsigned int op_type,
 		for (i = 0; i < insn->detail->loongarch.op_count; i++) {
 			if (insn->detail->loongarch.operands[i].type ==
 			    (loongarch_op_type)op_type)
+				count++;
+			if (count == post)
+				return i;
+		}
+		break;
+	case CS_ARCH_CSKY:
+		for (i = 0; i < insn->detail->csky.op_count; i++) {
+			if (insn->detail->csky.operands[i].type ==
+			    (csky_op_type)op_type)
 				count++;
 			if (count == post)
 				return i;
